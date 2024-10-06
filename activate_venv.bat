@@ -1,0 +1,6 @@
+@echo off
+call python -m venv .venv
+call .venv\Scripts\activate.bat
+call python.exe -m pip install --upgrade pip
+call pip install -r requirements.txt
+call python main.py
