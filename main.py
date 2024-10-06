@@ -1,45 +1,41 @@
 import asyncio
-import textwrap
-from openai import AsyncOpenAI
-
-client = AsyncOpenAI(
-    api_key='fresed-NQUmtrwXXd4RreAJKJGS52UiLsToUo',
-    base_url='https://fresedgpt.space/v1'
-)
-
-# Инициализируем список для хранения сообщений
-chat_history = []
+import datetime
+from utils import chat_history, log_file
+from chat import create_chat_completion
+from log import history_log
 
 
-async def test_create_chat_completion(prompt: str):
-    # Добавляем новое сообщение пользователя в историю
-    chat_history.append({'role': 'user', 'content': prompt})
-
-    stream = await client.chat.completions.create(
-        messages=chat_history,  # Передаём всю историю сообщений
-        model='gpt-4',
-        stream=True
-    )
-
-    output = ""
-    async for chunk in stream:
-        output += chunk.choices[0].delta.content or ''
-
-    # Ограничиваем вывод 100 символами с переносом по словам
-    wrapped_output = "\n".join(textwrap.fill(line, width=100, replace_whitespace=False) for line in output.splitlines())
-
-    print(wrapped_output)
-    print('\n')
-
-    # Добавляем ответ модели в историю
-    chat_history.append({'role': 'assistant', 'content': output})
-
-
-async def main():
+async def main(history: list):
+    with open("help_text.txt", 'r') as f:
+        help_text = f.read()
+    with open(log_file, 'a+') as f:
+        f.write(f'{datetime.datetime.now()}: Сеанс начался\n')
     while True:
-        prompt = input('>> ')
-        await test_create_chat_completion(prompt)
+        try:
+            prompt = input('>> ')
+            match prompt.lower():
+                case 'exit':
+                    print('До новых встреч!)')
+                    with open(log_file, 'a+') as f:
+                        f.write(f'{datetime.datetime.now()}: Сеанс закончился\n')
+                    break
+                case 'off':
+                    history.clear()  # Очищаем историю
+                    print('Контекст отчищен')
+                    continue
+                case 'help':
+                    print(help_text)
+                    continue
+                case 'history':
+                    history_log(log_file)
+                    continue
+                case _:
+                    await create_chat_completion(prompt)
+        except Exception as e:
+            print(f"Error: {e}")
+            with open(log_file, 'a+') as f:
+                f.write(f'{datetime.datetime.now()}: {e}\n')
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    asyncio.run(main(chat_history))
