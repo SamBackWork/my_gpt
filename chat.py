@@ -20,6 +20,7 @@ async def create_chat_completion(prompt: str):
         print("*" * 50)  # Добавляем строку из 50 "*"
         chat_history.append({'role': 'assistant', 'content': output})  # Добавляем ответ модели в историю
         with open(log_file, 'a+') as f:  # Записываем ответ в лог
+            f.write(f'{'*' * 50}\n')
             f.write(f'{datetime.datetime.now()}: {prompt}\n')
             f.write(f'{datetime.datetime.now()}: {output}\n')
     except Exception as e:
