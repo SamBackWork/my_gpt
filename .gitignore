@@ -1,0 +1,5 @@
+/.venv
+main.spec
+/logs
+/dist
+api_config.json
