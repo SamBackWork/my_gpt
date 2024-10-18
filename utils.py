@@ -28,7 +28,7 @@ client = AsyncOpenAI(
     base_url='https://fresedgpt.space/v1'
 )
 chat_history = []  # Инициализируем список для хранения сообщений
-log_dir = 'logs'  # Директория для логов
+log_dir = 'Logs'  # Директория для логов
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 log_file = os.path.join(log_dir, 'chat.md')

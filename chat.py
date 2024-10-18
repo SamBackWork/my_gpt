@@ -1,5 +1,6 @@
 import datetime
 from utils import *
+import aiofiles
 
 
 async def create_chat_completion(prompt: str):
@@ -19,13 +20,13 @@ async def create_chat_completion(prompt: str):
         print('\n')
         print("*" * 50)  # Добавляем строку из 50 "*"
         chat_history.append({'role': 'assistant', 'content': output})  # Добавляем ответ модели в историю
-        with open(log_file, 'a+') as l, open(note_file, 'w') as n:  # Записываем ответ в лог
-            l.write(f'{'*' * 50}\n')
-            l.write(f'{datetime.datetime.now()}: {prompt}\n')
-            l.write(f'{'*' * 50}\n')
-            l.write(f'{datetime.datetime.now()}: {output}\n')
-            n.write(f"{prompt}\n {'*' * 50}\n{output}\n")
+        async with aiofiles.open(log_file, 'a+') as l, aiofiles.open(note_file,'w') as n:  # Записываем ответ
+            await l.write(f'{'*' * 50}\n')
+            await l.write(f'{datetime.datetime.now()}: {prompt}\n')
+            await l.write(f'{'*' * 50}\n')
+            await l.write(f'{datetime.datetime.now()}: {output}\n')
+            await n.write(f"{prompt}\n {'*' * 50}\n{output}\n")
     except Exception as e:
         print(f"Error: {e}")
-        with open(log_file, 'a+') as l:
-            l.write(f'{datetime.datetime.now()}: {e}\n')
+        async with aiofiles.open(log_file, 'a+') as l:
+            await l.write(f'{datetime.datetime.now()}: {e}\n')
