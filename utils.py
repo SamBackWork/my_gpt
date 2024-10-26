@@ -1,7 +1,7 @@
 import os
-
+import datetime
 from openai import AsyncOpenAI
-
+import re
 import json
 
 
@@ -33,3 +33,23 @@ if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 log_file = os.path.join(log_dir, 'chat.md')
 note_file = os.path.join(log_dir, '00_note.md')
+
+
+def log_message(content):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"{timestamp} - {content}\n"
+    with open(log_file, '+a', encoding='utf-8') as f:
+        f.write(log_entry)
+
+
+def read_file(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+
+class NowTime:
+    now_time = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d %H:%M:%S")
+
+
+def starts_with_datetime(text):
+    return re.match(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', text) is not None

@@ -1,41 +1,29 @@
 import asyncio
-import datetime
-from utils import chat_history, log_file
+from utils import chat_history, log_file, log_message, read_file
 from chat import create_chat_completion
 from log import history_log
-import aiofiles
 
 
 async def main(history: list):
-    async with aiofiles.open("help_text.txt", 'r', encoding='utf-8') as h:
-        help_text = await h.read()
-    async with aiofiles.open(log_file, 'a+', encoding='utf-8') as d:
-        await d.write(f'{datetime.datetime.now()}: Сеанс начался\n')
-        while True:
-            try:
-                prompt = await asyncio.to_thread(input, '>> ')
-                match prompt.lower():
-                    case 'exit':
-                        print('До новых встреч!)')
-                        await d.write(f'{datetime.datetime.now()}: Сеанс закончился\n')
-                        return
-                    case 'off':
-                        history.clear()  # Очищаем историю
-                        print('Контекст отчищен')
-                        continue
-                    case 'help':
-                        print(help_text)
-                        continue
-                    case 'history':
-                        history_log(log_file)
-                        continue
-                    case _:
-                        await create_chat_completion(prompt)
-            except Exception as e:
-                print(f"Error: {e}")
-                await d.write(f'{datetime.datetime.now()}: {e}\n')
+    help_text = read_file('help_text.txt')
+    log_message('Сеанс начался\n')
+    actions = {
+        'exit': lambda: (print('До новых встреч!)'), log_message("Сеанс закончился\n"), exit()),
+        'off': lambda: (history.clear(), print('Контекст отчищен')),
+        'help': lambda: print(help_text),
+        'history': lambda: history_log(log_file),
+    }
+    while True:
+        try:
+            prompt = input('>> ').lower()
+            if prompt in actions:
+                actions[prompt]()
+            else:
+                await create_chat_completion(prompt)
+        except Exception as e:
+            print(f"Error: {e}")
+            log_message(f'{e}\n')
 
 
 if __name__ == '__main__':
     asyncio.run(main(chat_history))
-
