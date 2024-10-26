@@ -7,9 +7,9 @@ import aiofiles
 
 
 async def main(history: list):
-    async with aiofiles.open("help_text.txt", 'r') as h:
+    async with aiofiles.open("help_text.txt", 'r', encoding='utf-8') as h:
         help_text = await h.read()
-    async with aiofiles.open(log_file, 'a+') as d:
+    async with aiofiles.open(log_file, 'a+', encoding='utf-8') as d:
         await d.write(f'{datetime.datetime.now()}: Сеанс начался\n')
         while True:
             try:

@@ -5,7 +5,8 @@ import aiofiles
 
 async def create_chat_completion(prompt: str):
     try:
-        chat_history.append({'role': 'user', 'content': prompt})  # Добавляем новое сообщение пользователя в историю
+        chat_history.append({'role': 'user', 'content': prompt})  # Добgi
+                                # авляем новое сообщение пользователя в историю
         stream = await client.chat.completions.create(
             messages=chat_history,  # Передаём всю историю сообщений
             model='gpt-4-turbo',
@@ -20,13 +21,14 @@ async def create_chat_completion(prompt: str):
         print('\n')
         print("*" * 50)  # Добавляем строку из 50 "*"
         chat_history.append({'role': 'assistant', 'content': output})  # Добавляем ответ модели в историю
-        async with aiofiles.open(log_file, 'a+') as l, aiofiles.open(note_file,'w') as n:  # Записываем ответ
-            await l.write(f'{'*' * 50}\n')
-            await l.write(f'{datetime.datetime.now()}: {prompt}\n')
-            await l.write(f'{'*' * 50}\n')
-            await l.write(f'{datetime.datetime.now()}: {output}\n')
-            await n.write(f"{prompt}\n {'*' * 50}\n{output}\n")
+        async with (aiofiles.open(log_file, 'a+',encoding='utf-8') as log,
+                    aiofiles.open(note_file,'w',encoding='utf-8') as note):  # Записываем ответ
+            await log.write(f'{'*' * 50}\n')
+            await log.write(f'{datetime.datetime.now()}: {prompt}\n')
+            await log.write(f'{'*' * 50}\n')
+            await log.write(f'{datetime.datetime.now()}: {output}\n')
+            await note.write(f"{prompt}\n {'*' * 50}\n{output}\n")
     except Exception as e:
         print(f"Error: {e}")
-        async with aiofiles.open(log_file, 'a+') as l:
-            await l.write(f'{datetime.datetime.now()}: {e}\n')
+        async with aiofiles.open(log_file, 'a+',encoding='utf-8') as log:
+            await log.write(f'{datetime.datetime.now()}: {e}\n')

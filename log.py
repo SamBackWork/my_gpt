@@ -26,7 +26,7 @@ def history_log(log):
     end_time = datetime.datetime.now()
     print("Start time:", start_time)
     print("End time:", end_time)
-    with open(log, 'r') as f:
+    with open(log, 'r', encoding='utf-8') as f:
         print("Log file contents:")
         for line in f:
             print(line.strip())
