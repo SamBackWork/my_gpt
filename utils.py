@@ -7,7 +7,7 @@ import json
 
 class GetAPI:
     if "api_config.json" not in os.listdir():
-        with open('api_config.json', 'a+') as f:
+        with open('api_config.json', 'a+', encoding='utf-8') as f:
             try:
                 conf = json.load(f)
                 api_key = conf.get('api_key')
@@ -28,7 +28,7 @@ client = AsyncOpenAI(
     base_url='https://fresedgpt.space/v1'
 )
 chat_history = []  # Инициализируем список для хранения сообщений
-log_dir = 'Logs'  # Директория для логов
+log_dir = r'C:\Users\Sema\Мой диск\База знаний\Входищие'  # Директория для логов
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 log_file = os.path.join(log_dir, 'chat.md')
