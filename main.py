@@ -1,5 +1,6 @@
 import asyncio
-from utils import chat_history, log_file, log_message, read_file
+
+from utils import chat_history, log_file, log_message, read_file, reset_app, ModelGPT, CurrentModel
 from chat import create_chat_completion
 from log import history_log
 
@@ -12,6 +13,8 @@ async def main(history: list):
         'off': lambda: (history.clear(), print('Контекст отчищен')),
         'help': lambda: print(help_text),
         'history': lambda: history_log(log_file),
+        'reset': lambda: reset_app(),
+        'model': lambda: ModelGPT.change_of_model(ModelGPT.print_all_models())
     }
     while True:
         try:
@@ -26,4 +29,5 @@ async def main(history: list):
 
 
 if __name__ == '__main__':
+    print(f"Текущая модель: {CurrentModel.model}\n")
     asyncio.run(main(chat_history))
