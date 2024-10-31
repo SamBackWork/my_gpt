@@ -4,6 +4,7 @@ import datetime
 from openai import AsyncOpenAI
 import re
 import json
+import subprocess
 
 
 class GetAPI:
@@ -36,7 +37,6 @@ log_file = os.path.join(log_dir, 'chat.md')
 note_file = os.path.join(log_dir, '00_note.md')
 
 
-
 def log_message(content):  # Запись в лог сообщений с текущей датой
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_entry = f"{timestamp} {CurrentModel.model} - {content}\n"
@@ -55,7 +55,10 @@ def write_file(file_path, content):  # Запись в файл
 
 
 def reset_app():  # Сброс приложения
-    os.startfile("condition.bat")  # Запускаем новое приложение
+    try:
+        os.startfile("condition.bat")  # Запускаем новое приложение Windows
+    except:
+        subprocess.run(["python3", "main.py"])  # если запустились на Linux
     exit()  # Завершаем работу этого приложения
 
 

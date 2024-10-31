@@ -1,4 +1,4 @@
-if [-d".venv"]; then
+if [ -d".venv" ]; then
 	. .venv/bin/activate
 else
 	sudo install python3-venv
