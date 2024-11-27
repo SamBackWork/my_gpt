@@ -18,7 +18,7 @@ async def main(history: list):
     }
     while True:
         try:
-            prompt = input('>> ').lower()
+            prompt = input('>> ')
             if prompt in actions:
                 actions[prompt]()
             else:
